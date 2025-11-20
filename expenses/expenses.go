@@ -15,13 +15,6 @@ type Expense struct {
 	Amount      float64 `json:"amount"`
 }
 
-func expectArgs(count int, args []string) error {
-	if count != len(args) {
-		return fmt.Errorf("failed args. Expected - %d, have - %d", count, len(args))
-	}
-	return nil
-}
-
 func generateId(expenses []Expense) int {
 	maxId := 0
 	for _, expense := range expenses {
@@ -77,19 +70,42 @@ func withTask(operation func(expenses *[]Expense) error) error {
 	return marshalJson(expenses)
 }
 
-func AddExpense() error {
-	// if description == "" {
-	// 	return fmt.Errorf("task description cannot be empty")
-	// }
+func AddExpense(description string, amount float64) error {
+	if description == "" {
+		return fmt.Errorf("task description cannot be empty")
+	}
 	return withTask(func(expenses *[]Expense) error {
 		expense := Expense{
 			Id:          generateId(*expenses),
-			Date:        time.Now().Format("2006-01-02 15:04:05"),
-			Description: "",
-			Amount:      2,
+			Date:        time.Now().Format("2006-01-02"),
+			Description: description,
+			Amount:      amount,
 		}
 		*expenses = append(*expenses, expense)
 		fmt.Printf("Expense added successfully (ID: %d)\n", expense.Id)
+		return nil
+	})
+}
+
+func DeleteExpense(id int) error {
+	return withTask(func(expenses *[]Expense) error {
+		for i := 0; i < len(*expenses); i++ {
+			if (*expenses)[i].Id == id {
+				*expenses = append((*expenses)[:i], (*expenses)[i+1:]...)
+				fmt.Printf("Expense deleted successfully (ID: %d)\n", id)
+				return nil
+			}
+		}
+		return fmt.Errorf("task with ID %d not found", id)
+	})
+}
+
+func ListExpense() error {
+	return withTask(func(expenses *[]Expense) error {
+		// fmt.Println("ID Date    Description  Amount")
+		for i := range *expenses {
+			fmt.Println((*expenses)[i])
+		}
 		return nil
 	})
 }

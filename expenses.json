@@ -1,37 +1,23 @@
 [
   {
-    "id": 1,
-    "date": "2025-11-20 21:42:46",
-    "description": "",
-    "category": "",
-    "amount": 2
-  },
-  {
     "id": 2,
-    "date": "2025-11-20 21:42:52",
-    "description": "",
+    "date": "2025-11-20",
+    "description": "some",
     "category": "",
-    "amount": 2
+    "amount": 1000
   },
   {
     "id": 3,
-    "date": "2025-11-20 21:42:54",
-    "description": "",
+    "date": "2025-11-20",
+    "description": "some",
     "category": "",
-    "amount": 2
+    "amount": 1000
   },
   {
     "id": 4,
-    "date": "2025-11-20 21:44:53",
-    "description": "",
+    "date": "2025-11-21",
+    "description": "tv",
     "category": "",
-    "amount": 2
-  },
-  {
-    "id": 5,
-    "date": "2025-11-20 21:45:05",
-    "description": "",
-    "category": "",
-    "amount": 2
+    "amount": 570
   }
 ]
