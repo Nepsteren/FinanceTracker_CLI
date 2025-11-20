@@ -2,6 +2,7 @@ package commands
 
 import (
 	"bufio"
+	"finTrackCLI/expenses"
 	"fmt"
 	"os"
 	"strings"
@@ -12,16 +13,23 @@ func greeting() {
 	fmt.Println("Если вам нужна помощь введите команду: help")
 }
 
-func Start() {
+func Start() error {
 	greeting()
-	userInput()
+	err := userInput()
+	if err != nil {
+		return fmt.Errorf("failed to start - %w", err)
+	}
+	return nil
 }
 
-func userInput() {
+func userInput() error {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		if scanner.Scan() {
-			switchCommand(scanner.Text())
+			err := switchCommand(scanner.Text())
+			if err != nil {
+				return fmt.Errorf("failed to user input - %w", err)
+			}
 		}
 	}
 }
@@ -37,7 +45,7 @@ func parseCommand(commands string) (string, []string) {
 	return cmd, args
 }
 
-func switchCommand(commands string) {
+func switchCommand(commands string) error {
 	cmd, _ := parseCommand(commands)
 
 	switch cmd {
@@ -46,8 +54,12 @@ func switchCommand(commands string) {
 	case "exit":
 		exit()
 	case "add":
-
+		err := expenses.AddExpense()
+		if err != nil {
+			return fmt.Errorf("failed to add -%w", err)
+		}
 	}
+	return nil
 }
 
 func help() {

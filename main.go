@@ -1,7 +1,13 @@
 package main
 
-import "finTrackCLI/commands"
+import (
+	"finTrackCLI/commands"
+	"log"
+)
 
 func main() {
-	commands.Start()
+	err := commands.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
