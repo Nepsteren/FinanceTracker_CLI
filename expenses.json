@@ -1,12 +1,5 @@
 [
   {
-    "id": 2,
-    "date": "2025-11-20",
-    "description": "some",
-    "category": "",
-    "amount": 1000
-  },
-  {
     "id": 3,
     "date": "2025-11-20",
     "description": "some",
@@ -19,5 +12,40 @@
     "description": "tv",
     "category": "",
     "amount": 570
+  },
+  {
+    "id": 5,
+    "date": "2025-11-22",
+    "description": "mobile",
+    "category": "",
+    "amount": 400
+  },
+  {
+    "id": 6,
+    "date": "2025-11-22",
+    "description": "food",
+    "category": "",
+    "amount": 50
+  },
+  {
+    "id": 7,
+    "date": "2025-11-22",
+    "description": "food",
+    "category": "",
+    "amount": 50
+  },
+  {
+    "id": 8,
+    "date": "2025-11-22",
+    "description": "headphones",
+    "category": "",
+    "amount": 500
+  },
+  {
+    "id": 9,
+    "date": "2025-11-22",
+    "description": "headphones",
+    "category": "",
+    "amount": 500
   }
 ]

@@ -88,6 +88,33 @@ func delArgs(args []string) (int, error) {
 	return id, nil
 }
 
+func setBudgetArgs(args []string) (float64, error) {
+	var budget float64
+	err := expectArgs(2, args)
+	if err != nil {
+		return 0, fmt.Errorf("incorrect input - %w", err)
+	}
+
+	if args[0] == "--amount" {
+		budget, err = strconv.ParseFloat(args[1], 64)
+		if err != nil {
+			return 0, fmt.Errorf("incorrect amount - %w", err)
+		}
+		return budget, nil
+	}
+	return 0, fmt.Errorf("incorrect flag, expected --amount, have %s", args[0])
+}
+
+func saveBudget(budget float64) error {
+	fileName := "budget.txt"
+	data := fmt.Sprintf("%.2f", budget)
+	err := os.WriteFile(fileName, []byte(data), 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write budget to file - %w", err)
+	}
+	return nil
+}
+
 func switchCommand(commands string) error {
 	cmd, args := parseCommand(commands)
 
@@ -115,9 +142,22 @@ func switchCommand(commands string) error {
 			return fmt.Errorf("failed to delete expense - %w", err)
 		}
 	case "list":
-		{
-		}
 		expenses.ListExpense()
+	case "set-budget":
+		budget, err := setBudgetArgs(args)
+		if err != nil {
+			return fmt.Errorf("failed to set budget - %w", err)
+		}
+		err = saveBudget(budget)
+		if err != nil {
+			return fmt.Errorf("failed to save budget - %w", err)
+		}
+	case "summary":
+		sum, err := expenses.Summary()
+		if err != nil {
+			return fmt.Errorf("failed to count all amount - %w", err)
+		}
+		fmt.Println(sum)
 	}
 	return nil
 }

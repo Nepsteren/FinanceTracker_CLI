@@ -2,8 +2,10 @@ package expenses
 
 import (
 	"encoding/json"
+
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -70,6 +72,40 @@ func withTask(operation func(expenses *[]Expense) error) error {
 	return marshalJson(expenses)
 }
 
+func readFile() (float64, error) {
+	fileName := "budget.txt"
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return 0, fmt.Errorf("failed to read file - %w", err)
+	}
+	budget, err := strconv.ParseFloat(string(data), 64)
+	if err != nil {
+		return 0, fmt.Errorf("failed to parse budget - %w", err)
+	}
+	return budget, nil
+}
+
+func checkBudget() error {
+	_, err := os.Stat("budget.txt")
+	if os.IsNotExist(err) {
+		return nil
+	}
+	budget, err := readFile()
+	if err != nil {
+		return fmt.Errorf("failed to read budget - %w", err)
+	}
+
+	summary, err := Summary()
+	if err != nil {
+		return fmt.Errorf("failed to count all amount - %w", err)
+	}
+
+	if summary > budget {
+		fmt.Printf("You went over budget! Budget - %0.2f. Summary - %0.2f\n", budget, summary)
+	}
+	return nil
+}
+
 func AddExpense(description string, amount float64) error {
 	if description == "" {
 		return fmt.Errorf("task description cannot be empty")
@@ -81,8 +117,13 @@ func AddExpense(description string, amount float64) error {
 			Description: description,
 			Amount:      amount,
 		}
+		err := checkBudget()
+		if err != nil {
+			return fmt.Errorf("failed to check budget - %w", err)
+		}
 		*expenses = append(*expenses, expense)
 		fmt.Printf("Expense added successfully (ID: %d)\n", expense.Id)
+
 		return nil
 	})
 }
@@ -108,4 +149,19 @@ func ListExpense() error {
 		}
 		return nil
 	})
+}
+
+func Summary() (float64, error) {
+	var sum float64
+	err := withTask(func(expenses *[]Expense) error {
+		for i := range *expenses {
+			sum += (*expenses)[i].Amount
+		}
+		return nil
+	})
+
+	if err != nil {
+		return 0, err
+	}
+	return sum, nil
 }
